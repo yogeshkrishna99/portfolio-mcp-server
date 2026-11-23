@@ -1,0 +1,7 @@
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+.mcp.json
+appsettings.*.local.json
