@@ -26,7 +26,15 @@ public class PortfolioApiClient(HttpClient http)
 
     public async Task<JsonElement> BuyAsync(int portfolioId, string symbol, string exchange, decimal quantity, decimal price)
     {
-        var body = new { symbol, exchange, quantity, price, brokerage = 0m };
+        // The API binds the Exchange enum by number (NSE=0, BSE=1, US=2), so map the text to its value.
+        var exchangeValue = exchange.ToUpperInvariant() switch
+        {
+            "NSE" => 0,
+            "BSE" => 1,
+            "US" => 2,
+            _ => throw new ArgumentException($"Unknown exchange '{exchange}'. Use NSE, BSE or US.", nameof(exchange)),
+        };
+        var body = new { symbol, exchange = exchangeValue, quantity, price, brokerage = 0m };
         var response = await http.PostAsJsonAsync($"api/portfolio/{portfolioId}/buy", body, Json);
         return await ReadAsync(response);
     }

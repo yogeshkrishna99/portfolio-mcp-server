@@ -64,6 +64,7 @@ public class PortfolioApiClientTests
         Assert.Equal(HttpMethod.Post, handler.LastRequest!.Method);
         Assert.Equal("https://api.test/api/portfolio/3/buy", handler.LastRequest.RequestUri!.ToString());
         Assert.Contains("\"symbol\":\"TCS\"", handler.LastBody);
+        Assert.Contains("\"exchange\":0", handler.LastBody); // NSE is sent as its enum value
         Assert.Contains("\"quantity\":10", handler.LastBody);
         Assert.Contains("\"price\":3800", handler.LastBody);
     }

@@ -79,5 +79,11 @@ Three unit tests cover `PortfolioApiClient` against a fake `HttpMessageHandler`,
 ## Limitations and next steps
 
 - The tools need a token that is already valid. Login and token refresh are not wrapped yet.
-- Tests cover the HTTP client, not the MCP tool wiring. An end-to-end test against a running API is the next step.
-- The stock-price source is the StockPortfolio API's Yahoo Finance endpoint, which is unofficial and can change without notice.
+- Tests cover the HTTP client, not the MCP tool wiring. The tools were checked by hand against a running API: `record_buy` recorded a trade and `get_portfolio_summary` returned the portfolio.
+- `get_portfolio_summary` depends on live prices from Yahoo Finance. When Yahoo rate-limits (HTTP 429), the API returns a 500 for the whole summary instead of a partial result. This is a known issue in the API, not in this server.
+- The stock-price source is the Yahoo Finance endpoint, which is unofficial and can change without notice.
+
+## Troubleshooting
+
+- **SSL error with `https://localhost`:** the local development certificate isn't trusted. Run `dotnet dev-certs https --trust` once, or point `PORTFOLIO_API_URL` at an `http://` address.
+- **`Portfolio API returned 400` on `record_buy`:** check the exchange is `NSE`, `BSE` or `US`. The server maps these to the API's numeric enum values.
